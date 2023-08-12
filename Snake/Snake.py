@@ -99,17 +99,17 @@ def reset():
     food.goto(food_position)
     game_loop()
 
-# Create a window where we will do our drawing.
+# Game window
 screen = turtle.Screen()
 screen.setup(WIDTH, HEIGHT)  # Set the dimensions of the Turtle Graphics window.
 screen.bgcolor("black")
 screen.tracer(0)  # Disables automatic animation
 
-# Event handler
+# Event handler (arrow key commands)
 screen.listen()
 bind_direction_keys()
 
-# Create a stamp movements
+# Snake
 stamp = turtle.Turtle()
 stamp.shape("circle")
 stamp.penup()
