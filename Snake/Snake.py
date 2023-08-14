@@ -1,9 +1,13 @@
-# Import the Turtle Graphics module
+"""To improve:
+1. Add sounds on new game, game over, music
+2. Food shouldn't start on snake"""
+
+# Import the Turtle Graphics, random modules
 import turtle
 import random
 
 # Define program constants
-WIDTH = 800
+WIDTH = 500
 HEIGHT = 500
 FOOD_SIZE = 20  # Pixels
 EATING_DIST = 20
@@ -35,6 +39,7 @@ def set_snake_direction(direction):
 
 def game_loop():
     stamp.clearstamps()  # Removes existing snake
+    stamp_head.clearstamps()  # Removes existing snake head
 
     new_head = snake[-1].copy()
     new_head[0] += offsets[snake_direction][0]
@@ -52,16 +57,20 @@ def game_loop():
         if not food_collision():
             snake.pop(0)  # Removing last segment as the snake moves
             
-        # Draw the snake
+        # Drawing the snake
         for segment in snake:
-            stamp.goto(segment[0], segment[1])
+            stamp.goto(segment[0], segment[1])  # x & y coordinates
             stamp.stamp()
+
+        # Drawing snkae's head
+        stamp_head.goto(snake[-1][0], snake[-1][1])  # x & y coordinates
+        stamp_head.stamp()
 
         # Making record
         scores.append(score)
         record = max(scores)
         
-        # Refreshing the screen
+        # Refreshing the screen - to render updates
         screen.title(f"Snake. Score: {score}. Record: {record}")
         screen.update()
 
@@ -72,16 +81,43 @@ def food_collision():
     global food_position, score, delay
     if get_distance(snake[-1], food_position) < EATING_DIST:
         score += 1
-        delay = delay - 10  # Increasing speed as score rises
+        if score <= 10:
+            delay -= 10  # Increasing speed as score rises
         food_position = get_random_food_position()  # Creating new food position if previous was eaten
         food.goto(food_position)
         return True
     return False
 
 def get_random_food_position():  # except snake position
-    x = random.randint(-WIDTH/2 + FOOD_SIZE, WIDTH/2 - FOOD_SIZE)
-    y = random.randint(-HEIGHT/2 + FOOD_SIZE, HEIGHT/2 - FOOD_SIZE)
-    return(x, y)
+    
+    # Appending snake's x & y coordinates to respective lists
+    snake_x = []
+    snake_y = []
+    for segment in snake:
+        snake_x.append(segment[0])
+    for segment in snake:
+        snake_y.append(segment[1])
+    
+    # Appending screen's x & y coordinates to respective lists
+    screen_x = []
+    screen_y = []
+    for coord in range(int(-WIDTH/2 + FOOD_SIZE), int(WIDTH/2 - FOOD_SIZE)):
+         screen_x.append(coord)
+    for coord in range(int(-HEIGHT/2 + FOOD_SIZE), int(HEIGHT/2 - FOOD_SIZE)):
+         screen_y.append(coord)
+    
+    # Removing snake's coordinate's from screen's coordinates to get free spaces
+    for coord in snake_x:
+        for i in range(coord -10, coord +10):  # Removing +-10 pixels within snake
+            if i in screen_x:
+                screen_x.remove(i)
+    for coord in snake_y:
+        for i in range(coord -10, coord +10):  # Removing +-10 pixels within snake
+            if i in screen_y:
+                screen_y.remove(i)
+    x = random.choice(screen_x)
+    y = random.choice(screen_y)
+    return (x, y)
 
 def get_distance(pos1, pos2):
     x1, y1 = pos1
@@ -93,7 +129,7 @@ def reset():
     global score, delay, snake, snake_direction, food_position
     score = 0
     delay = 200  # Milliseconds
-    snake = [[0, 0], [20, 0], [40, 0], [60, 0]]
+    snake = [[0, 0], [20, 0], [40, 0], [60, 0]]  # x & y coordinates
     snake_direction = "up"
     food_position = get_random_food_position()
     food.goto(food_position)
@@ -114,6 +150,12 @@ stamp = turtle.Turtle()
 stamp.shape("circle")
 stamp.penup()
 stamp.color("green")  # Color of our future snake
+
+# Snake head (other color)
+stamp_head = turtle.Turtle()
+stamp_head.shape("circle")
+stamp_head.penup()
+stamp_head.color("orange")  # Color of snake head
 
 # Food
 food = turtle.Turtle()
