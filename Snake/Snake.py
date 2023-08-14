@@ -1,19 +1,14 @@
-"""To improve:
-1. Add sounds on new game, game over, music
-2. Food shouldn't start on snake"""
-
 # Import the Turtle Graphics, random modules
 import turtle
 import random
 
 # Define program constants
-WIDTH = 500
+WIDTH = 800
 HEIGHT = 500
 FOOD_SIZE = 20  # Pixels
 EATING_DIST = 20
 
 scores = []
-
 offsets = {"up": (0, 20), "down": (0, -20), "right": (20, 0), "left": (-20, 0)}
 
 def bind_direction_keys():
@@ -52,7 +47,7 @@ def game_loop():
     else:
         # Add new head to the snake body
         snake.append(new_head)
-
+        
         # Check snake-food collision
         if not food_collision():
             snake.pop(0)  # Removing last segment as the snake moves
