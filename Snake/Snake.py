@@ -11,11 +11,13 @@ EATING_DIST = 20
 scores = []
 offsets = {"up": (0, 20), "down": (0, -20), "right": (20, 0), "left": (-20, 0)}
 
+
 def bind_direction_keys():
     screen.onkey(lambda: set_snake_direction("up"), "Up")
     screen.onkey(lambda: set_snake_direction("down"), "Down")
     screen.onkey(lambda: set_snake_direction("right"), "Right")
     screen.onkey(lambda: set_snake_direction("left"), "Left")
+
 
 def set_snake_direction(direction):
     global snake_direction
@@ -31,6 +33,7 @@ def set_snake_direction(direction):
     elif direction == "left":
         if snake_direction != "right":
             snake_direction = "left"
+
 
 def game_loop():
     stamp.clearstamps()  # Removes existing snake
@@ -57,7 +60,7 @@ def game_loop():
             stamp.goto(segment[0], segment[1])  # x & y coordinates
             stamp.stamp()
 
-        # Drawing snkae's head
+        # Drawing snake's head
         stamp_head.goto(snake[-1][0], snake[-1][1])  # x & y coordinates
         stamp_head.stamp()
 
@@ -72,6 +75,7 @@ def game_loop():
         # Rinse and repeat
         turtle.ontimer(game_loop, delay)
 
+
 def food_collision():
     global food_position, score, delay
     if get_distance(snake[-1], food_position) < EATING_DIST:
@@ -82,6 +86,7 @@ def food_collision():
         food.goto(food_position)
         return True
     return False
+
 
 def get_random_food_position():  # except snake position
     
@@ -97,28 +102,30 @@ def get_random_food_position():  # except snake position
     screen_x = []
     screen_y = []
     for coord in range(int(-WIDTH/2 + FOOD_SIZE), int(WIDTH/2 - FOOD_SIZE)):
-         screen_x.append(coord)
+        screen_x.append(coord)
     for coord in range(int(-HEIGHT/2 + FOOD_SIZE), int(HEIGHT/2 - FOOD_SIZE)):
-         screen_y.append(coord)
+        screen_y.append(coord)
     
     # Removing snake's coordinate's from screen's coordinates to get free spaces
     for coord in snake_x:
-        for i in range(coord -10, coord +10):  # Removing +-10 pixels within snake
+        for i in range(coord - 10, coord + 10):  # Removing +-10 pixels within snake
             if i in screen_x:
                 screen_x.remove(i)
     for coord in snake_y:
-        for i in range(coord -10, coord +10):  # Removing +-10 pixels within snake
+        for i in range(coord - 10, coord + 10):  # Removing +-10 pixels within snake
             if i in screen_y:
                 screen_y.remove(i)
     x = random.choice(screen_x)
     y = random.choice(screen_y)
-    return (x, y)
+    return x, y
+
 
 def get_distance(pos1, pos2):
     x1, y1 = pos1
     x2, y2 = pos2
-    distance = ((y2 - y1)**2 + (x2 - x1)**2 )**(0.5)  # Pythagoras' theorem
+    distance = ((y2 - y1)**2 + (x2 - x1) ** 2)**0.5  # Pythagoras' theorem
     return distance
+
 
 def reset():
     global score, delay, snake, snake_direction, food_position
@@ -129,6 +136,7 @@ def reset():
     food_position = get_random_food_position()
     food.goto(food_position)
     game_loop()
+
 
 # Game window
 screen = turtle.Screen()
